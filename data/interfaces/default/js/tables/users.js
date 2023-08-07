@@ -99,6 +99,18 @@ users_list_table_options = {
             "className": "no-wrap"
         },
         {
+            "targets": "email",
+            "data": "email",
+            "createdCell": function (td, cellData, rowData, row, col) {
+                if (cellData !== null && cellData !== '') {
+                    $(td).html(cellData);
+                }
+            },
+            "searchable": false,
+            "width": "10%",
+            "className": "no-wrap"
+        },
+        {
             "targets": "last_seen",
             "data": "last_seen",
             "createdCell": function (td, cellData, rowData, row, col) {

@@ -117,6 +117,7 @@ class Users(object):
         columns = ['users.user_id',
                    '(CASE WHEN users.friendly_name IS NULL OR TRIM(users.friendly_name) = "" \
                     THEN users.username ELSE users.friendly_name END) AS friendly_name',
+                   'users.email AS email',
                    'users.thumb AS user_thumb',
                    'users.custom_avatar_url AS custom_thumb',
                    'COUNT(session_history.id) AS plays',
@@ -189,6 +190,7 @@ class Users(object):
 
             row = {'user_id': item['user_id'],
                    'friendly_name': item['friendly_name'],
+                   'email': item['email'],
                    'user_thumb': user_thumb,
                    'plays': item['plays'],
                    'duration': item['duration'],
