@@ -59,9 +59,14 @@ class plexServers(object):
     @property
     def servers(self):
         servers = []
-        for account in plexpy.PLEXTV_ACCOUNTS.accounts:
-            for server in account.servers:
-                servers.append(server)
+        db = database.MonitorDatabase()
+        serverlist = db.select('SELECT pms_identifier FROM servers')
+        for server in serverlist:
+            for account in plexpy.PLEXTV_ACCOUNTS.accounts:
+                for accountServer in account.servers:
+                    if server['pms_identifier'] == accountServer.CONFIG.PMS_IDENTIFIER:
+                        servers.append(accountServer)
+                        break
         for server in self.unowned_servers:
             servers.append(server)
         return servers
@@ -93,14 +98,11 @@ class plexServers(object):
         if server_id:
             server = plexpy.PMS_SERVERS.get_server_by_id(server_id)
             result = server.delete(keep_history=keep_history)
-            if result and not keep_history:
-                delattr(self, server.CONFIG.PMS_IDENTIFIER)
         return result
 
     def refresh(self):
         logger.info(u"Tautulli Servers :: Servers refreshing...")
         plexpy.PLEXTV_ACCOUNTS.refresh_servers()
-
 
     def refresh_libraries(self):
         thread_list = []
