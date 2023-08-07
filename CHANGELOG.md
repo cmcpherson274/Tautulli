@@ -1,5 +1,10 @@
 # Changelog
 
+## v4.2.00 (2023-08-07)
+* (UPDATED) Updated packages to support python 3.11.
+* (FIXED) Purging a server would generate an error.
+* (UPDATED) Added email column to the users list.
+
 ## v4.1.07 (2021-12-04)
 * (FIXED) thread.isAlive() has been deprecated and replaced with is_alive()
 * (UPDATED) cffi package 1.14.6 not available for python 3.10.
