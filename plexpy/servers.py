@@ -1516,8 +1516,19 @@ class plexServer(object):
                 # Try getting the parent_rating_key from the grandparent's children
                 if not parent_rating_key:
                     children_list = self.get_item_children(grandparent_rating_key)
-                    parent_rating_key = next((c['rating_key'] for c in children_list['children_list']
-                                              if c['media_index'] == parent_media_index), '')
+                    
+                    if isinstance(children_list, dict) and 'children_list' in children_list:
+                        # If children_list is a dictionary with a 'children_list' key
+                        parent_rating_key = next((c['rating_key'] for c in children_list['children_list']
+                                                  if c['media_index'] == parent_media_index), '')
+                    elif isinstance(children_list, list):
+                        # If children_list is directly a list
+                        parent_rating_key = next((c['rating_key'] for c in children_list
+                                                  if c['media_index'] == parent_media_index), '')
+                    else:
+                        # Handle unexpected cases
+                        parent_rating_key = ''
+                        print(f"Unexpected structure for children_list: {type(children_list)}")
 
             metadata = {'media_type': metadata_type,
                         'server_id': self.CONFIG.ID,
