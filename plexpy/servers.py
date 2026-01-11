@@ -266,8 +266,17 @@ class plexServer(object):
 
     @property
     def url(self):
-        if self.CONFIG.PMS_SSL or self.CONFIG.PMS_URL == '':
-            return self.CONFIG.PMS_URI
+        # Check: PMS_SSL setting, OR if PMS_URI starts with https, OR if port is 443
+        pms_uri = self.CONFIG.PMS_URI or ''
+        use_ssl = (
+            self.CONFIG.PMS_SSL or 
+            pms_uri.startswith('https://') or
+            self.CONFIG.PMS_PORT == 443 or
+            self.CONFIG.PMS_URL == ''
+        )
+    
+        if use_ssl:
+            return pms_uri
         else:
             return self.CONFIG.PMS_URL
 
