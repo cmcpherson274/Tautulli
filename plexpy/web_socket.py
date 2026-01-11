@@ -74,8 +74,21 @@ class ServerWebSocket(object):
 
     def connect(self):
         from websocket import create_connection
-        if self.server.CONFIG.PMS_SSL and self.server.CONFIG.PMS_URL[:5] == 'https':
-            uri = self.server.CONFIG.PMS_URL.replace('https://', 'wss://') + '/:/websockets/notifications'
+
+        # Determine if we should use secure WebSocket
+        # Check PMS_SSL setting, or if PMS_URI starts with https, or if port is 443
+        use_ssl = (
+            self.server.CONFIG.PMS_SSL or 
+            self.server.CONFIG.PMS_URI[:5] == 'https' or
+            self.server.CONFIG.PMS_PORT == 443
+        )
+
+        if use_ssl:
+            # Prefer PMS_URI if it's https, otherwise convert PMS_URL
+            if self.server.CONFIG.PMS_URI[:5] == 'https':
+                uri = self.server.CONFIG.PMS_URI.replace('https://', 'wss://') + '/:/websockets/notifications'
+            else:
+                uri = self.server.CONFIG.PMS_URL.replace('http://', 'wss://').replace('https://', 'wss://') + '/:/websockets/notifications'
             secure = 'secure '
         else:
             uri = 'ws://%s:%s/:/websockets/notifications' % (
