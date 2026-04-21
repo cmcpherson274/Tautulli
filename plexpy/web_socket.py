@@ -189,9 +189,15 @@ class ServerWebSocket(object):
             self.server.PLEX_SERVER_UP = True
 
         if not self.server.PLEX_SERVER_UP:
-            logger.info(u"Tautulli WebSocket :: %s: The Plex Media Server is back up." % self.server.CONFIG.PMS_NAME)
-            plexpy.NOTIFY_QUEUE.put({'notify_action': 'on_intup', 'server_id': self.server.CONFIG.ID})
+            if self.server.pms_down_notified:
+                logger.info(u"Tautulli WebSocket :: %s: The Plex Media Server is back up." % self.server.CONFIG.PMS_NAME)
+                plexpy.NOTIFY_QUEUE.put({'notify_action': 'on_intup', 'server_id': self.server.CONFIG.ID})
+            else:
+                logger.info(u"Tautulli WebSocket :: %s: The Plex Media Server reconnected before the down threshold elapsed; suppressing notifications." % self.server.CONFIG.PMS_NAME)
             self.server.PLEX_SERVER_UP = True
+
+        self.server.pms_down_since = None
+        self.server.pms_down_notified = False
 
         if plexpy.CONFIG.WEBSOCKET_MONITOR_PING_PONG:
             self.send_ping()
@@ -201,8 +207,13 @@ class ServerWebSocket(object):
     def on_disconnect(self):
         if self.server.PLEX_SERVER_UP is None or self.server.PLEX_SERVER_UP:
             logger.info(u"Tautulli WebSocket :: %s: Unable to get a response from the server, Plex server is down." % self.server.CONFIG.PMS_NAME)
-            plexpy.NOTIFY_QUEUE.put({'notify_action': 'on_intdown', 'server_id': self.server.CONFIG.ID})
             self.server.PLEX_SERVER_UP = False
+            self.server.pms_down_since = int(time.time())
+            self.server.pms_down_notified = False
+
+            if plexpy.CONFIG.PMS_DOWN_THRESHOLD <= 0:
+                plexpy.NOTIFY_QUEUE.put({'notify_action': 'on_intdown', 'server_id': self.server.CONFIG.ID})
+                self.server.pms_down_notified = True
 
         activity_processor.ActivityProcessor(server=self.server).set_temp_stopped()
         self.server.initialize_scheduler()

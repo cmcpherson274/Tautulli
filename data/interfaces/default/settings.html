@@ -847,6 +847,21 @@
                             </div>
                             <p class="help-block">The value (in seconds) Tautulli should wait before triggering the next buffer warning. 0 to always trigger.</p>
                         </div>
+                        <div class="form-group">
+                            <label for="pms_down_threshold">Plex Server Down Notification Threshold</label>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" data-parsley-type="integer" id="pms_down_threshold" name="pms_down_threshold" value="${config['pms_down_threshold']}" data-parsley-min="0" data-parsley-trigger="change" data-parsley-errors-container="#pms_down_threshold_error" required>
+                                </div>
+                                <div id="pms_down_threshold_error" class="alert alert-danger settings-alert" role="alert"></div>
+                            </div>
+                            <p class="help-block">
+                                The number of seconds the Plex Media Server must be unreachable before triggering the Plex Server Down notification.
+                                This avoids false-positive alerts for brief network blips or quick restarts.
+                                The matching Plex Server Back Up notification is only sent if a Down notification was sent.
+                                Set to 0 to notify immediately. Default: 300 (5 minutes).
+                            </p>
+                        </div>
                         <div class="checkbox advanced-setting">
                             <label>
                                 <input type="checkbox" name="notify_consecutive" id="notify_consecutive" value="1" ${config['notify_consecutive']}> Allow Consecutive Notifications

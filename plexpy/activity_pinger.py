@@ -286,6 +286,17 @@ def connect_server(server=None, log=True, startup=False):
     else:
         status = True
 
+    if (server.CONFIG.PMS_IS_ENABLED
+            and not server.server_shutdown
+            and server.pms_down_since is not None
+            and not server.pms_down_notified
+            and plexpy.CONFIG.PMS_DOWN_THRESHOLD > 0
+            and int(time.time()) - server.pms_down_since >= plexpy.CONFIG.PMS_DOWN_THRESHOLD):
+        logger.info(u"Tautulli Monitor :: %s: Plex server has been down for %s seconds; sending down notification."
+                    % (server.CONFIG.PMS_NAME, plexpy.CONFIG.PMS_DOWN_THRESHOLD))
+        plexpy.NOTIFY_QUEUE.put({'notify_action': 'on_intdown', 'server_id': server.CONFIG.ID})
+        server.pms_down_notified = True
+
     if status:
         if log and not startup and not server.WS_CONNECTED and not server.server_shutdown and server.CONFIG.PMS_IS_ENABLED:
             logger.info(u"Tautulli Monitor :: %s: Attempting to reconnect Plex server..." % server.CONFIG.PMS_NAME)

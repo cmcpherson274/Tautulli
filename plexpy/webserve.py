@@ -2861,6 +2861,7 @@ class WebInterface(object):
             "home_refresh_interval": plexpy.CONFIG.HOME_REFRESH_INTERVAL,
             "buffer_threshold": plexpy.CONFIG.BUFFER_THRESHOLD,
             "buffer_wait": plexpy.CONFIG.BUFFER_WAIT,
+            "pms_down_threshold": plexpy.CONFIG.PMS_DOWN_THRESHOLD,
             "group_history_tables": checked(plexpy.CONFIG.GROUP_HISTORY_TABLES),
             "git_token": plexpy.CONFIG.GIT_TOKEN,
             "imgur_client_id": plexpy.CONFIG.IMGUR_CLIENT_ID,

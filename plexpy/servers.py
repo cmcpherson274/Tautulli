@@ -244,6 +244,8 @@ class plexServer(object):
     PLEXTV = None
     CONFIG = None
     PLEX_SERVER_UP = None
+    pms_down_since = None
+    pms_down_notified = False
     WS_CONNECTED = False
     WS = None
     SCHED = None
@@ -263,6 +265,8 @@ class plexServer(object):
         self.SCHED = BackgroundScheduler()
         self.SCHED_LOCK = threading.Lock()
         self.monitor_lock = threading.Lock()
+        self.pms_down_since = None
+        self.pms_down_notified = False
 
     @property
     def url(self):

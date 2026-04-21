@@ -132,6 +132,7 @@ class Config(object):
         'BROWSER_ON_NEWDEVICE': (int, 'Browser', 0),
         'BUFFER_THRESHOLD': (int, 'Monitoring', 10),
         'BUFFER_WAIT': (int, 'Monitoring', 900),
+        'PMS_DOWN_THRESHOLD': (int, 'Monitoring', 300),
         'BACKUP_DAYS': (int, 'General', 3),
         'BACKUP_DIR': (str, 'General', ''),
         'BACKUP_INTERVAL': (int, 'General', 6),
